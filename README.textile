@@ -1,0 +1,33 @@
+h1. jQuery Dateformat
+
+*Version:* 0.1.0
+
+*License:* Dual licensed under:
+"MIT":http://www.opensource.org/licenses/mit-license.php
+"GPLv3":http://www.opensource.org/licenses/gpl-3.0.html
+
+*Author:* "Eric Garside":http://code.knewton.com/
+
+*Size:* ?K Closure Compiled, ?K Source
+
+h2. Overview
+
+A plugin for formatting native Date objects using a system more consistent with date formatting available to other languages.
+
+h2. Browser Support
+
+IE6+, WebKit Browsers (Safari, Chrome), Firefox 2+
+
+h2. Simple Example
+
+Check the "example.html" file for a quick example.
+
+h2. Documentation
+
+Check out the "Dateformat Wiki":http://github.com/Knewton/jQuery-Dateformat/wiki
+
+h2. Changelog
+
+*Version 0.1*
+
+* Initial Release 
