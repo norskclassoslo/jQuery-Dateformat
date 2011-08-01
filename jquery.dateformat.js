@@ -148,6 +148,11 @@
 	 *	@return The formatted date string
 	 */
 	function formatDate(date, format) {
+		if (format === null ||
+				format === undefined) {
+			format = "";		
+		}
+	
 		format = format.split('');
 		
 		var output = '',
@@ -555,7 +560,7 @@
 		P: function () {
 			var t = _.O.apply(this);
 			
-			return t.subst(0, 3) + ':' + t.substr(3);
+			return t.substr(0, 3) + ':' + t.substr(3);
 		},
 		
 		/**
@@ -598,7 +603,6 @@
 	//------------------------------
 	
 	$.extend(Date.prototype, {
-		
 		/**
 		 *	Given a string of formatting commands, return the date object as a formatted string.
 		 *
@@ -618,6 +622,53 @@
 	//------------------------------
 	
 	$.dateformat = {
+		label: {
+			/**
+			 *	Display string for many years
+			 */
+			years: "%t years",
+			
+			/**
+			 *	Display string for one year.
+			 */
+			year: "1 year",
+			
+			/**
+			 *	Display string for many months.
+			 */
+			months: "%t months",
+			
+			/**
+			 *	Display string for one month.
+			 */
+			month: "1 month",
+			
+			/**
+			 *	Display string for some number of days.
+			 */
+			days: "%t days",
+			
+			/**
+			 *	Display string for one day.
+			 */
+			day: "1 day",
+			
+			/**
+			 *	Display string for today.
+			 */
+			today: "%d (ends today)",
+			
+			/**
+			 *	Display string for days since.
+			 */
+			since: "%d (%r since)",
+			
+			/**
+			 *	Display string for days until.
+			 */
+			until: "%d (%r left)"
+		},
+		
 		/**
 		 *	Get a reference to the formatting rules, or set custom rules.
 		 *
@@ -626,12 +677,86 @@
 		 *	@return The formatting rules.
 		 */
 		rules: function (custom) {
-			if (custom !== undefined)
-			{
+			if (custom !== undefined) {
 				_ = $.extend(_, custom);
 			}
 			
 			return _;
+		},
+		
+		/**
+		 *	Relative date format.
+		 *
+		 *	@param	date	The date to relative format.
+		 *
+		 *	@param	format	The format to use. Optional.
+		 *
+		 *	@return	A string describing the relative days, months, and years until/since the date.
+		 */
+		relative: function (date, format) {
+			var relative = [],
+			
+				days = 0,
+				
+				years = 0,
+				
+				months = 0,
+				
+				now = new Date(),
+				
+				delta,
+				
+				display_label;
+				
+			if (now.valueOf() > date.valueOf()) {
+				delta = new Date(now.valueOf() - date.valueOf());
+				display_label = $.dateformat.label.since;
+			} else {
+				delta = new Date(date.valueOf() - now.valueOf());
+				display_label = $.dateformat.label.until;
+			}
+			
+			days = parseInt(formatDate(delta, "V"));
+			
+			if (days > 365) {
+				years = Math.floor(days / 365);
+				days = days % 365;
+				
+				if (years === 1) {
+					relative.push($.dateformat.label.year);
+				} else {
+					relative.push($.dateformat.label.years.replace("%t", years));
+				}
+			}
+			
+			if (days > 30) {
+				months = Math.floor(days / 30);
+				days = days % 30;
+				
+				if (months === 1) {
+					relative.push($.dateformat.label.month);
+				} else {
+					relative.push($.dateformat.label.months.replace("%t", months));
+				}
+			}
+			
+			days = Math.floor(days);
+			
+			if (days === 1) {
+				relative.push($.dateformat.label.day);
+			} else if (days > 0) {
+				relative.push($.dateformat.label.days.replace("%t", days));
+			}
+			
+			if (days === 0 && 
+					months === 0 && 
+					years === 0) {
+				display_label = $.dateformat.label.today;
+			}
+			
+			return display_label
+				.replace("%d", formatDate(date, format))
+				.replace("%r", relative.join(" "));
 		},
 		
 		/**
@@ -734,7 +859,7 @@
 		},
 	
 		/**
-		 *	Relative date format.
+		 *	Relative time format.
 		 *
 		 *	@param	date	The date to timeformat.
 		 *
