@@ -29,35 +29,35 @@
 		 *	String formatting for each month, with January at index "0" and December at "11".
 		 */
 	var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-	
+
 		/**
 		 *	String formatting for each day, with Sunday at index "0" and Saturday at index "6"
 		 */
 		DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-		
+
 		/**
 		 *	The number of days in each month.
 		 */
 		COUNTS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
-		
+
 		/**
 		 *	English ordinal suffix for corresponding days of the week.
 		 */
 		SUFFIX = [null, 'st', 'nd', 'rd'],
-		
+
 	//------------------------------
 	//  Regex
 	//------------------------------
-		
+
 		/**
 		 *	Regex for replacing the time token in a timeformat string.
 		 */
 		RX_TIME_TOKEN = /%t/g,
-		
+
 	//------------------------------
 	//	 Time formatting
 	//------------------------------
-		
+
 		/**
 		 *	Time constants
 		 */
@@ -68,25 +68,25 @@
 			day: 864e5,
 			week: 6048e5
 		},
-		
+
 	//------------------------------
 	//
 	//	Property Declaration
 	//
 	//------------------------------
-		
+
 		/**
 		 *	Define the object which will hold reference to the actual formatting functions. By not directly prototyping these
 		 *	into the date function, we vastly reduce the amount of bloat adding these options causes.
 		 */
 		_;
-		
+
 	//------------------------------
 	//
 	//	Internal Methods
 	//
 	//------------------------------
-	
+
 	/**
 	 *	Left-pad the string with the provided string up to the provided length.
 	 *
@@ -101,10 +101,10 @@
 	function pad(format, string, length) {
 		format = format + '';
 		length = length || 2;
-	
+
 		return format.length < length ? new Array(1 + length - format.length).join(string) + format : format;
 	}
-	
+
 	/**
 	 *	Right-pad the string with the provided string up to the provided length.
 	 *
@@ -119,7 +119,7 @@
 	function rpad(format, string, length) {
 		format = format + '';
 		length = length || 2;
-		
+
 		return format.length < length ? format + new Array(1 + length - format.length).join(string) : format;
 	}
 
@@ -137,7 +137,7 @@
 	function modCalc(date, mod1, mod2) {
 		return (Math.floor(Math.floor(date.valueOf() / 1e3) / mod1) % mod2);
 	}
-	
+
 	/**
 	 *	Given a string, return a properly formatted date string.
 	 *
@@ -150,13 +150,13 @@
 	function formatDate(date, format) {
 		if (format === null ||
 				format === undefined) {
-			format = "";		
+			format = "";
 		}
-	
+
 		format = format.split('');
-		
+
 		var output = '',
-			
+
 			/**
 			 *	The characteracters '{' and '}' are the start and end characteracters of an escape. Anything between these
 			 *	characteracters will not be treated as a formatting commands, and will merely be appended to the output
@@ -164,26 +164,26 @@
 			 *	to the output, and the formatting check should therefore be skipped.
 			 */
 			buffering = false,
-	 
+
 			character = '',
-			
+
 			index = 0;
-			
+
 		for (; index < format.length; index++) {
 			character = format[index] + '';
-			
+
 			switch (character)
 			{
 
 			case ' ':
 				output += character;
 				break;
-				
+
 			case '{':
 			case '}':
 				buffering = character === '{';
 				break;
-			
+
 			default:
 				if (!buffering && _[character])
 				{
@@ -197,16 +197,16 @@
 
 			}
 		}
-	 
+
 		return output;
 	}
-	
+
 	//------------------------------
 	//
 	//	Class Definition
 	//
 	//------------------------------
-	
+
 	/**
 	 *	The formatting object holds all the actual formatting commands which should be accessible
 	 *	for date formatting.
@@ -223,7 +223,7 @@
 		//------------------------------
 		//	Timer Formatting
 		//------------------------------
-		
+
 		/**
 		 *	This is intended to be used for delta computation when subtracting one date object from another.
 		 *
@@ -232,7 +232,7 @@
 		V: function () {
 			return modCalc(this, 864e2, 1e5);
 		},
-		
+
 		/**
 		 *	This is intended to be used for delta computation when subtracting one date object from another.
 		 *
@@ -250,7 +250,7 @@
 		K: function () {
 			return _.V.apply(this) % 365;
 		},
-		
+
 		/**
 		 *	This is intended to be used for delta computation when subtracting one date object from another.
 		 *
@@ -259,7 +259,7 @@
 		k: function () {
 			return pad(_.K.apply(this), 0);
 		},
-		
+
 		/**
 		 *	This is intended to be used for delta computation when subtracting one date object from another.
 		 *
@@ -268,7 +268,7 @@
 		X: function () {
 			return modCalc(this, 36e2, 24);
 		},
-		
+
 		/**
 		 *	This is intended to be used for delta computation when subtracting one date object from another.
 		 *
@@ -277,7 +277,7 @@
 		x: function () {
 			return pad(_.X.apply(this), 0);
 		},
-		
+
 		/**
 		 *	This is intended to be used for delta computation when subtracting one date object from another.
 		 *
@@ -286,7 +286,7 @@
 		p: function () {
 			return modCalc(this, 60, 60);
 		},
-		
+
 		/**
 		 *	This is intended to be used for delta computation when subtracting one date object from another.
 		 *
@@ -295,7 +295,7 @@
 		C: function () {
 			return pad(_.p.apply(this), 0);
 		},
-		
+
 		/**
 		 *	This is intended to be used for delta computation when subtracting one date object from another.
 		 *
@@ -304,7 +304,7 @@
 		E: function () {
 			return (_.X.apply(this) * 60) + _.p.apply(this);
 		},
-		
+
 		/**
 		 *	This is intended to be used for delta computation when subtracting one date object from another.
 		 *
@@ -313,110 +313,110 @@
 		e: function () {
 			return pad(_.E.apply(this), 0);
 		},
-		
+
 		//------------------------------
 		//	Day Formatting
 		//------------------------------
-		
+
 		/**
 		 *	@return The day of the month, padded to two digits.
 		 */
 		d: function () {
 			return pad(this.getDate(), 0);
 		},
-		
+
 		/**
 		 *	@return A textual representation of the day, three letters.
 		 */
 		D: function () {
 			return DAYS[this.getDay()].substring(0, 3);
 		},
-		
+
 		/**
 		 *	@return Day of the month without leading zeros.
 		 */
 		j: function () {
 			return this.getDate();
 		},
-		
+
 		/**
 		 *	@return A full textual representation of the day of the week.
 		 */
 		l: function () {
 			return DAYS[this.getDay()];
 		},
-		
+
 		/**
 		 *	@return ISO-8601 numeric representation of the day of the week.
 		 */
 		N: function () {
 			return this.getDay() + 1;
 		},
-		
+
 		/**
 		 *	@return English ordinal suffix for the day of the month, two characteracters.
 		 */
 		S: function () {
 			return SUFFIX[this.getDate()] || 'th';
 		},
-		
+
 		/**
 		 *	@return Numeric representation of the day of the week.
 		 */
 		w: function () {
 			return this.getDay();
 		},
-		
+
 		/**
 		 *	@return The day of the year (starting from 0).
 		 */
 		z: function () {
 			return Math.round((this - _.f.apply(this)) / 864e5);
 		},
-		
+
 		//------------------------------
 		//	Week
 		//------------------------------
-		
+
 		/**
-		 *	@return ISO-8601 week number of year, weeks starting on Monday 
+		 *	@return ISO-8601 week number of year, weeks starting on Monday
 		 */
 		W: function () {
 			return Math.ceil(((((this - _.f.apply(this)) / 864e5) + _.w.apply(_.f.apply(this))) / 7));
 		},
-		
+
 		//------------------------------
 		//	Month
 		//------------------------------
-		
+
 		/**
 		 *	@return A full textual representation of a month, such as January.
 		 */
 		F: function () {
 			return MONTHS[this.getMonth()];
 		},
-		
+
 		/**
 		 *	@return Numeric representation of a month, padded to two digits.
 		 */
 		m: function () {
 			return pad((this.getMonth() + 1), 0);
 		},
-		
+
 		/**
 		 *	@return A short textual representation of a month, three letters.
 		 */
 		M: function () {
 			return MONTHS[this.getMonth()].substring(0, 3);
 		},
-		
+
 		/**
 		 *	@return Numeric representation of a month, without leading zeros.
 		 */
 		n: function () {
 			return this.getMonth() + 1;
 		},
-		
+
 		/**
 		 *	@return Number of days in the given month.
 		 */
@@ -426,168 +426,168 @@
 			{
 				return 29;
 			}
-			
+
 			return COUNTS[this.getMonth()];
 		},
-		
-		
+
+
 		//------------------------------
 		//	Year
 		//------------------------------
-		
+
 		/**
 		 *	@return Whether it's a leap year. 1 if it is a leap year, 0 otherwise.
 		 */
 		L: function () {
 			var Y = _.Y.apply(this);
-		
+
 			return Y % 4 ? 0 : Y % 100 ? 1 : Y % 400 ? 0 : 1;
 		},
-		
+
 		/**
 		 *	@return A Date object representing the first day of the current year.
 		 */
 		f: function () {
 			return new Date(this.getFullYear(), 0, 1);
 		},
-		
+
 		/**
 		 *	@return A full numeric representation of the year, 4 digits.
 		 */
 		Y: function () {
 			return this.getFullYear();
 		},
-		
+
 		/**
 		 *	@return A two digit representation of the year.
 		 */
 		y: function () {
 			return ('' + this.getFullYear()).substr(2);
 		},
-		
+
 		//------------------------------
 		//	Time
 		//------------------------------
-		
+
 		/**
 		 *	@return Lowercase Ante/Post Meridiem values.
 		 */
 		a: function () {
 			return this.getHours() < 12 ? 'am' : 'pm';
 		},
-		
+
 		/**
 		 *	@return Uppercase Ante/Post Meridiem values.
 		 */
 		A: function () {
 			return _.a.apply(this).toUpperCase();
 		},
-		
+
 		/**
 		 *	If you ever use this for anything, email <eric@knewton.com>, cause he'd like to know how you found this nonsense useful.
 		 *
-		 *	@return Swatch internet time. 
+		 *	@return Swatch internet time.
 		 */
 		B: function () {
 			return pad(Math.floor((((this.getHours()) * 36e5) + (this.getMinutes() * 6e4) + (this.getSeconds() * 1e3)) / 864e2), 0, 3);
 		},
-		
+
 		/**
 		 *	@return 12-hour format of an hour.
 		 */
 		g: function () {
 			return this.getHours() % 12 || 12;
 		},
-		
+
 		/**
 		 *	@return 24-hour format of an hour.
 		 */
 		G: function () {
 			return this.getHours();
 		},
-		
+
 		/**
 		 *	@return 12-hour format of an hour, padded to two digits.
 		 */
 		h: function () {
 			return pad(_.g.apply(this), 0);
 		},
-		
+
 		/**
 		 *	@return 24-hour format of an hour, padded to two digits.
 		 */
 		H: function () {
 			return pad(this.getHours(), 0);
 		},
-		
+
 		/**
 		 *	@return Minutes, padded to two digits.
 		 */
 		i: function () {
 			return pad(this.getMinutes(), 0);
 		},
-		
+
 		/**
 		 *	@return Seconds, padded to two digits.
 		 */
 		s: function () {
 			return pad(this.getSeconds(), 0);
 		},
-		
+
 		/**
 		 *	@return Microseconds
 		 */
 		u: function () {
 			return this.getTime() % 1e3;
 		},
-		
+
 		//------------------------------
 		//	Timezone
 		//------------------------------
-		
+
 		/**
 		 *	@return Difference to GMT in hours.
 		 */
 		O: function () {
 			var t = this.getTimezoneOffset() / 60;
-			
+
 			return rpad(pad((t >= 0 ? '+' : '-') + Math.abs(t), 0), 0, 4);
 		},
-		
+
 		/**
 		 *	@return Difference to GMT in hours, with colon between hours and minutes
 		 */
 		P: function () {
 			var t = _.O.apply(this);
-			
+
 			return t.substr(0, 3) + ':' + t.substr(3);
 		},
-		
+
 		/**
 		 *	@return Timezone offset in seconds.
 		 */
 		Z: function () {
 			return this.getTimezoneOffset() * 60;
 		},
-		
+
 		//------------------------------
 		//	Full Date/Time
 		//------------------------------
-		
+
 		/**
 		 *	@return ISO 8601 date
 		 */
 		c: function () {
 			return _.Y.apply(this) + '-' + _.m.apply(this) + '-' + _.d.apply(this) + 'T' + _.H.apply(this) + ':' + _.i.apply(this) + ':' +	_.s.apply(this) + _.P.apply(this);
 		},
-		
+
 		/**
 		 *	@return RFC 2822 formatted date
 		 */
 		r: function () {
 			return this.toString();
 		},
-		
+
 		/**
 		 *	@return The number of seconds since the epoch.
 		 */
@@ -595,13 +595,13 @@
 			return this.getTime();
 		}
 	};
-	
+
 	//------------------------------
 	//
 	//	Native Prototype
 	//
 	//------------------------------
-	
+
 	$.extend(Date.prototype, {
 		/**
 		 *	Given a string of formatting commands, return the date object as a formatted string.
@@ -614,61 +614,61 @@
 			return formatDate(this, format);
 		}
 	});
-	
+
 	//------------------------------
 	//
 	//	Expose to jQuery
 	//
 	//------------------------------
-	
+
 	$.dateformat = {
 		label: {
 			/**
 			 *	Display string for many years
 			 */
 			years: "%t years",
-			
+
 			/**
 			 *	Display string for one year.
 			 */
 			year: "1 year",
-			
+
 			/**
 			 *	Display string for many months.
 			 */
 			months: "%t months",
-			
+
 			/**
 			 *	Display string for one month.
 			 */
 			month: "1 month",
-			
+
 			/**
 			 *	Display string for some number of days.
 			 */
 			days: "%t days",
-			
+
 			/**
 			 *	Display string for one day.
 			 */
 			day: "1 day",
-			
+
 			/**
 			 *	Display string for today.
 			 */
 			today: "%d (ends today)",
-			
+
 			/**
 			 *	Display string for days since.
 			 */
 			since: "%d (%r since)",
-			
+
 			/**
 			 *	Display string for days until.
 			 */
 			until: "%d (%r left)"
 		},
-		
+
 		/**
 		 *	Get a reference to the formatting rules, or set custom rules.
 		 *
@@ -680,10 +680,10 @@
 			if (custom !== undefined) {
 				_ = $.extend(_, custom);
 			}
-			
+
 			return _;
 		},
-		
+
 		/**
 		 *	Relative date format.
 		 *
@@ -695,19 +695,19 @@
 		 */
 		relative: function (date, format) {
 			var relative = [],
-			
+
 				days = 0,
-				
+
 				years = 0,
-				
+
 				months = 0,
-				
+
 				now = new Date(),
-				
+
 				delta,
-				
+
 				display_label;
-				
+
 			if (now.valueOf() > date.valueOf()) {
 				delta = new Date(now.valueOf() - date.valueOf());
 				display_label = $.dateformat.label.since;
@@ -715,50 +715,50 @@
 				delta = new Date(date.valueOf() - now.valueOf());
 				display_label = $.dateformat.label.until;
 			}
-			
+
 			days = parseInt(formatDate(delta, "V"));
-			
+
 			if (days > 365) {
 				years = Math.floor(days / 365);
 				days = days % 365;
-				
+
 				if (years === 1) {
 					relative.push($.dateformat.label.year);
 				} else {
 					relative.push($.dateformat.label.years.replace("%t", years));
 				}
 			}
-			
+
 			if (days > 30) {
 				months = Math.floor(days / 30);
 				days = days % 30;
-				
+
 				if (months === 1) {
 					relative.push($.dateformat.label.month);
 				} else {
 					relative.push($.dateformat.label.months.replace("%t", months));
 				}
 			}
-			
+
 			days = Math.floor(days);
-			
+
 			if (days === 1) {
 				relative.push($.dateformat.label.day);
 			} else if (days > 0) {
 				relative.push($.dateformat.label.days.replace("%t", days));
 			}
-			
-			if (days === 0 && 
-					months === 0 && 
+
+			if (days === 0 &&
+					months === 0 &&
 					years === 0) {
 				display_label = $.dateformat.label.today;
 			}
-			
+
 			return display_label
 				.replace("%d", formatDate(date, format))
 				.replace("%r", relative.join(" "));
 		},
-		
+
 		/**
 		 *	Determine if the dateformat plugin has the requested formatting rule.
 		 *
@@ -769,7 +769,7 @@
 		hasRule: function (rule) {
 			return _[rule] !== undefined;
 		},
-	
+
 		/**
 		 *	Get a formatting value for a given date.
 		 *
@@ -780,7 +780,7 @@
 		get: function (type, date) {
 			return _[type].apply(date || new Date());
 		},
-		
+
 		/**
 		 *	Given a string of formatting commands, return the date object as a formatted string.
 		 *
@@ -793,71 +793,71 @@
 		format: function (format, date) {
 			return formatDate(date || new Date(), format);
 		},
-		
+
 		/**
 		 *	@inheritDoc
 		 */
 		pad: pad,
-		
+
 		/**
 		 *	@inheritDoc
 		 */
 		rpad: rpad
 	};
-	
+
 	$.timeformat = {
 		label: {
 			/**
 			 *	Display string for never (invalid date).
 			 */
 			never: "Never",
-			
+
 			/**
 			 *	Display string for right now.
 			 */
 			now: "right now",
-			
+
 			/**
 			 *	Display string for 2+ seconds ago.
 			 */
 			seconds: "%t seconds ago",
-			
+
 			/**
 			 *	Display string for 1 minute ago.
 			 */
 			minute: "about 1 minute ago",
-			
+
 			/**
 			 *	Display string for 2+ minutes ago.
 			 */
 			minutes: "%t minutes ago",
-			
+
 			/**
 			 *	Display string for 1 hour ago.
 			 */
 			hour: "about 1 hour ago",
-			
+
 			/**
 			 *	Display string for 2+ hours ago.
 			 */
 			hours: "%t hours ago",
-			
+
 			/**
 			 *	Display string for yesterday.
 			 */
 			yesterday: "yesterday",
-			
+
 			/**
 			 *	Display string for 2+ days.
 			 */
 			days: "%t days ago",
-			
+
 			/**
 			 *	Display string for 1+ years
 			 */
 			years: "over a year ago"
 		},
-	
+
 		/**
 		 *	Relative time format.
 		 *
@@ -868,16 +868,16 @@
 		relative: function (date) {
 				//	The current date
 			var now = new Date(),
-				
+
 				//	The difference between now and later
 				difference = (new Date(now.valueOf() - date.valueOf())).valueOf(),
-				
+
 				//	Time to add into a display label in place of a %t token
 				time,
-				
+
 				//	The relative time label
 				label;
-				
+
 			if (isNaN(difference) || difference < 0) {
 				label = $.timeformat.label.never;
 			} else if (difference < TIME.second * 2) {
@@ -904,14 +904,24 @@
 			} else {
 				label = $.timeformat.label.years;
 			}
-			
+
 			if (time !== undefined) {
 				label = label.replace(RX_TIME_TOKEN, time);
 			}
-			
+
 			return label;
 		}
 	};
-		 
+
+	//------------------------------
+	// Date Format
+	//------------------------------
+
+	$.dateString = "M j, Y g:i a";
+	$.date = function (d) {
+		return [$.timeformat.relative(d),
+				" (", $.dateformat.format($.dateString, d), ")"].join("");
+	};
+
 }(jQuery));
 
