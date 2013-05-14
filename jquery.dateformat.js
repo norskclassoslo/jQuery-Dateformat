@@ -551,7 +551,7 @@
 		O: function () {
 			var t = this.getTimezoneOffset() / 60;
 
-			return rpad(pad((t >= 0 ? '+' : '-') + Math.abs(t), 0), 0, 4);
+			return (t >= 0 ? '+' : '-') + rpad(pad(Math.abs(t), 0), 0, 4);
 		},
 
 		/**
